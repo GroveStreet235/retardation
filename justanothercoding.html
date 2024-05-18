@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flying Audio Windows</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flying Audio Windows</h1>
+
+    <audio id="backgroundAudio" autoplay loop></audio>
+
+    <script>
+        // Function to create flying audio windows
+        function createFlyingAudioWindow() {
+            const width = 300;
+            const height = 100;
+            const win = window.open('', '', `width=${width},height=${height},left=0,top=0`);
+            
+            let posX = Math.random() * (screen.width - width);
+            let posY = Math.random() * (screen.height - height);
+            let speedX = (Math.random() - 0.5) * 50; // Random speed between -25 and 25
+            let speedY = (Math.random() - 0.5) * 50; // Random speed between -25 and 25
+
+            function moveWindow() {
+                posX += speedX;
+                posY += speedY;
+
+                if (posX < 0 || posX + width > screen.width) {
+                    speedX *= -1; // Reverse direction if hitting horizontal boundary
+                }
+                if (posY < 0 || posY + height > screen.height) {
+                    speedY *= -1; // Reverse direction if hitting vertical boundary
+                }
+
+                win.moveTo(posX, posY);
+            }
+
+            // Construct the HTML content for the about:blank window
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Embedded Audio</title>
+                </head>
+                <body style="margin: 0; overflow: hidden;">
+                    <!-- Empty body -->
+                </body>
+                </html>
+            `;
+
+            // Write the HTML content to the about:blank window
+            win.document.write(htmlContent);
+
+            setInterval(moveWindow, 10); // Move the window every 10 milliseconds
+        }
+
+        // Function to start spawning flying audio windows
+        function startSpawningAudioWindows() {
+            setTimeout(() => {
+                function spawnAudioWindows() {
+                    for (let i = 0; i < 20; i++) {
+                        createFlyingAudioWindow();
+                    }
+                }
+
+                setInterval(spawnAudioWindows, 5000); // Spawn audio windows every 5 seconds
+                spawnAudioWindows(); // Initial spawn
+            }, 5000); // Delay for 5 seconds before spawning
+        }
+
+        startSpawningAudioWindows(); // Start spawning flying audio windows
+
+        // Load and play audio file
+        var audio = document.getElementById("backgroundAudio");
+        var audioFiles = ["audio/audio1.mp3"]; // List of audio files
+        var randomIndex = Math.floor(Math.random() * audioFiles.length); // Randomly select an audio file
+        audio.src = audioFiles[randomIndex]; // Set the source of the audio element
+        audio.play(); // Play the audio
+    </script>
+</body>
+</html>
